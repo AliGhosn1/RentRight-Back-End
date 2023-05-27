@@ -14,20 +14,18 @@ const getAllUsers = async (req, res) => {
 
 const createUser = async (req, res) => {
     try{
-        const { name, email, avatar } = req.body;
+        const { name, email, avatar, number, address } = req.body;
 
         const userExist = await User.findOne({ email });
 
         if(userExist) return res.status(200).json(userExist);
 
-        const newUser = await User.create({ name, email, avatar });
-
+        const newUser = await User.create({ name, email, avatar, number, address });
+    
         res.status(200).json(newUser);
     } catch(error){
         res.status(500).json({ message: error.message });
     }
-
-
 };
 
 const getUserInfoByID = async (req, res) => {
@@ -43,4 +41,17 @@ const getUserInfoByID = async (req, res) => {
     }
 };
 
-export { getAllUsers, createUser, getUserInfoByID };
+const updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { number, address } = req.body;
+
+        await User.findByIdAndUpdate({ _id: id }, { number, address });
+
+        res.status(200).json({ message: 'User updated successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export { getAllUsers, createUser, getUserInfoByID, updateUser };
