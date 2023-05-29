@@ -45,7 +45,8 @@ const getAllProperties = async (req, res) => {
 const getPropertyDetail = async (req, res) => {
     const { id } = req.params;
 
-    const propertyExists = await Property.findOne({ _id: id }).populate('creator');
+    let propertyExists = await Property.findOne({ _id: id }).populate('creator').populate('allReviews');
+    propertyExists = await propertyExists.populate('allReviews.user');
 
     if(propertyExists) res.status(200).json(propertyExists);
     else res.status(404).json({ message:'Property Not Found' })
